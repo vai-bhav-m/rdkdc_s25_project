@@ -1,0 +1,54 @@
+ur5 = ur5_interface();
+
+g1 = [0 -1 0 0.25; -1 0 0 0.6; 0 0 -1 0.22; 0 0 0 1];
+g2 = [0 -1 0 0.40; -1 0 0 0.45; 0 0 -1 0.22; 0 0 0 1];
+
+% Placing frames at start and end for visalization in RViz
+Frame_A = tf_frame("base_link", "Start", g1);
+Frame_B = tf_frame("base_link", "End", g2);
+
+
+% Moving robot to the starting configuration with the highest
+% manipulability
+thetas = ur5InvKin(g1);
+max_manip = 0;
+best_idx = 0;
+for i=1:size(thetas,2)
+    J = ur5BodyJacobian(thetas(:,i));
+    if manipulability(J,'invcond') > max_manip
+        max_manip = manipulability(J,'invcond');
+        best_idx = i;
+    end
+end
+
+start_theta = thetas(:,best_idx);
+ur5.move_joints(start_theta, 20);
+pause(2);
+
+
+% Moving bot via IK
+best_theta = start_theta;
+t_pos = g1(1:3,4);
+alpha = 0;
+while norm(t_pos-g2(1:3,4)) > 1e-6
+alpha = alpha + 0.01;          % Increments of 0.01
+t_pos = g1(1:3,4) + alpha*(g2(1:3,4)-g1(1:3,4));
+g_new = [g1(1:3,1:3) t_pos; 0 0 0 1];
+best_theta = closest_IK(g_new, best_theta);
+ur5.move_joints(best_theta,10);
+pause(1);
+end
+
+
+function best_theta = closest_IK(g, q)
+thetas = ur5InvKin(g);
+closest = 1000;
+next_idx = 0;
+for i=1:size(thetas,2)         % Finding the right IK configuration
+    if norm(thetas(:,i) - q) < closest
+        closest = norm(thetas(:,i) - q);
+        next_idx = i;
+    end
+end
+best_theta = thetas(:,next_idx);
+end
