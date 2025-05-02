@@ -31,12 +31,12 @@ for i = 1:size(candidate_thetas, 2)
 end
 
 start_theta = candidate_thetas(:, best_idx);
-ur5.move_joints(start_theta, 20);
-pause(2);
+ur5.move_joints(start_theta, 50);
+pause(5);
 
 %% Interpolate from start to end transformation
 current_theta = start_theta;
-N = 100;
+N = 10;
 
 R_start = g_start(1:3, 1:3);
 R_end = g_end(1:3, 1:3);
@@ -76,8 +76,12 @@ function [theta, omega] = rotation_to_axis_angle(R)
     theta = acos((trace(R) - 1) / 2);
     if theta == 0
         omega = [0; 0; 0];
+    elseif abs(theta - pi) < 1e-6
+        % Special case: rotation by pi
+        [V, D] = eig(R);
+        omega = V(:, abs(diag(D) - 1) < 1e-6);
+        omega = omega / norm(omega);
     else
-        omega = 1 / (2 * sin(theta)) * ...
-                [R(3,2) - R(2,3); R(1,3) - R(3,1); R(2,1) - R(1,2)];
+        omega = 0.5 / sin(theta) * [R(3,2) - R(2,3); R(1,3) - R(3,1); R(2,1) - R(1,2)];
     end
 end
