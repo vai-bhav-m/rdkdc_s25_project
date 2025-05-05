@@ -17,21 +17,21 @@ function T = ur5FwdKin(theta)
     w2 = [0, 1, 0];
     w3 = [0, 1, 0];
     w4 = [0, 1, 0];
-    w5 = [0, 0, 1];
+    w5 = [0, 0, -1];
     w6 = [0, 1, 0];
 
     % Position vectors (v vectors)
-    v1 = [0, 0, 0];            % q1 = [0, 0, 0]
-    v2 = [-H1, 0, 0];          % q2 = [0, 0,  H1]
-    v3 = [-H1-L1, 0, 0];       % q3 = [0, 0, H1+L1]
-    v4 = [-H1-L1-L2, 0, 0];    % q4 = [0, 0, H1+L1+L2]
-    v5 = [W1, 0, 0];           % q5 = [0, W1, 0]
-    v6 = [H1+H2+L1+L2, 0, 0];    % q6 = [0, 0, H1+H2+L1+L2]
+    v1 = [0, 0, 0];
+    v2 = [-H1, 0, 0];
+    v3 = [-H1, 0, L1];
+    v4 = [-H1, 0, L1+L2];
+    v5 = [-W1, L1+L2, 0];
+    v6 = [H2-H1, 0, L1+L2];
 
     %% Home Configuration of the End Effector
-    gst0 = [1, 0, 0, 0;
+    gst0 = [-1, 0, 0, L1+L2;
              0, 0, 1, W1+W2;
-             0, -1, 0, H1+H2+L1+L2;
+             0, 1, 0, H1-H2;
              0, 0, 0, 1];
 
     %% Build the Screw Axes
@@ -77,3 +77,4 @@ function T_exp = TwistExponential(xi, theta_val)
     T_exp = expm(xi_mat * theta_val);
 
 end
+
