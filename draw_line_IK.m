@@ -4,7 +4,7 @@ ur5 = ur5_interface();
 
 %% Initialize safe config
 theta_safe = [60; -80; 100; -120; -90; 40] * pi / 180;
-ur5.move_joints(theta_safe, 10);
+ur5.move_joints(theta_safe, 15);
 waitforbuttonpress;
 
 %% Define start and end transformation matrices
