@@ -52,6 +52,7 @@ tf_frame("base_link", "End", g_end);
 % start_theta = candidate_thetas(:, best_idx);
 start_theta = closest_IK(g_start, ur5.home);
 ur5.move_joints(start_theta, 10);
+pause(5);
 disp("Moved to start position")
 waitforbuttonpress;
 
