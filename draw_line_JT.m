@@ -1,6 +1,7 @@
 %% Initialize UR5 robot interface
-% ur5 = ur5_interface();
-% ur5.switch_to_ros_control
+ur5 = ur5_interface();
+pause(5);
+ur5.switch_to_ros_control
 
 %% Initialize safe config
 theta_safe = [60; -80; 100; -120; -90; 40] * pi / 180;
@@ -54,25 +55,28 @@ ur5.move_joints(start_theta, 10);
 disp("Moved to start position")
 waitforbuttonpress;
 
+%% RR
+K = 5;
+ur5JTcontrol(g_end,K,ur5)
 %% Interpolate from start to end transformation
-current_theta = start_theta;
-N = 10;
-
-R_start = g_start(1:3, 1:3);
-R_end = g_end(1:3, 1:3);
-pos_start = g_start(1:3, 4);
-pos_end = g_end(1:3, 4);
-
-for i = 1:N
-    alpha = i / N;
-    pos_i = pos_start + alpha * (pos_end - pos_start);
-    R_i = interpolate_rotation(R_start, R_end, i, N);
-    g_interp = [g_start(1:3,1:3), pos_i; 0 0 0 1];
-
-    current_theta = closest_IK(g_interp, current_theta);
-    ur5.move_joints(current_theta, 10);
-    pause(10);
-end
+% current_theta = start_theta;
+% N = 10;
+% 
+% R_start = g_start(1:3, 1:3);
+% R_end = g_end(1:3, 1:3);
+% pos_start = g_start(1:3, 4);
+% pos_end = g_end(1:3, 4);
+% 
+% for i = 1:N
+%     alpha = i / N;
+%     pos_i = pos_start + alpha * (pos_end - pos_start);
+%     R_i = interpolate_rotation(R_start, R_end, i, N);
+%     g_interp = [g_start(1:3,1:3), pos_i; 0 0 0 1];
+% 
+%     current_theta = closest_IK(g_interp, current_theta);
+%     ur5.move_joints(current_theta, 10);
+%     pause(10);
+% end
 
 %% --- Helper Functions ---
 

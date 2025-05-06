@@ -29,7 +29,7 @@ function finalerr = ur5JTcontrol(gdesired, K, ur5)
             disp("WARNING: Near singularity, but continuing (Jacobian Transpose is more robust)");
         end
 
-        gst = ur5FwdKin(q);                  % Get current end-effector pose
+        gst = compute_FK_DH(q);                  % Get current end-effector pose
         Xi = getXi(pinv(gdesired) * gst);    % Compute error twist (desired vs current)
 
         % Check for convergence: both translational and rotational error small
@@ -43,7 +43,7 @@ function finalerr = ur5JTcontrol(gdesired, K, ur5)
         qdot = K * Jb' * Xi;
 
         % Euler integration to get next joint configuration
-        q_next = q + Tstep * qdot;
+        q_next = q - Tstep * qdot;
         ur5.move_joints(q_next, 5);
         pause(1);
     end
