@@ -20,15 +20,26 @@ waitforbuttonpress;
 % ur5.switch_to_ros_control
 % disp("Switched to ros control")
 % Define start and end transformation matrices
-g_start = [0 -1 0 0.3;
-           -1 0 0 0.5;
-            0 0 -1 0.2;
-            0 0 0 1];
+% g_start = [0 -1 0 0.3;
+%            -1 0 0 0.5;
+%             0 0 -1 0.145;
+%             0 0 0 1];
+% 
+% g_end = [0 -1 0 0.40;
+%          -1 0 0 0.45;
+%           0 0 -1 0.145;
+%           0 0 0 1];
 
-g_end = [0 -1 0 0.40;
-         -1 0 0 0.45;
-          0 0 -1 0.2;
-          0 0 0 1];
+g_start = [0.0531   -0.9969   -0.0575    0.3270;
+   -0.9962   -0.0489   -0.0716    0.5805;
+    0.0686    0.0611   -0.9958    0.1450;
+         0         0         0    1.0000];
+
+g_end = [0.0531   -0.9969   -0.0575    0.34;
+   -0.9962   -0.0489   -0.0716    0.600;
+    0.0686    0.0611   -0.9958    0.1450;
+         0         0         0    1.0000];
+
 
 % Visualize frames in RViz
 tf_frame("base_link", "Start", g_start);
