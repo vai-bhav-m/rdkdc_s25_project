@@ -1,6 +1,4 @@
 function make_T(ur5, control_type, K)
-
-
 %% Hardcoded start and end
 % g_start = [0.0531   -0.9969   -0.0575    0.3270;
 %    -0.9962   -0.0489   -0.0716    0.5805;
@@ -68,11 +66,11 @@ if control_type == "IK"
     ur5IKcontrol(g_start,g_end,K,ur5);
 elseif control_type == "RR"
     ur5RRcontrol(g_end,K,ur5);
-    ur5.move_joints(end_theta, 10);
+    ur5.move_joints(end_theta, 5);
     pause(10);
 elseif control_type == "JT"
     ur5JTcontrol(g_end,K,ur5);
-    ur5.move_joints(end_theta, 10);
+    ur5.move_joints(end_theta, 5);
     pause(10);
 else
     error('INVALID Control request, enter one of {IK, RR, JT}');
@@ -97,7 +95,7 @@ ur5.move_joints(theta_safe, 15);
 pause(5)
 
 % Move to middle position
-mid_theta = closest_IK(g_mid, ur5.home);
+mid_theta = q(g_mid, ur5.home);
 end_theta = closest_IK(g_bottom, mid_theta);
 ur5.move_joints(mid_theta, 10);
 pause(5);

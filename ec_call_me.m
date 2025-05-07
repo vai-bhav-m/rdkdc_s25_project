@@ -1,9 +1,10 @@
 function ec_call_me(ur5)
-    nums = input("Enter a list of digits (0-9) in a vector format, e.g., [1 2 3]: ");
-    while ~isnumeric(nums) || any(nums < 0 | nums > 9 | floor(nums) ~= nums)
-        disp("Invalid input. Please enter a vector of integers between 0 and 9.");
-        nums = input("Enter a list of digits (0-9) in a vector format, e.g., [1 2 3]: ");
-    end
+    % nums = input("Enter a list of digits (0-9) in a vector format, e.g., [1 2 3]: ");
+    % while ~isnumeric(nums) || any(nums < 0 | nums > 9 | floor(nums) ~= nums)
+    %     disp("Invalid input. Please enter a vector of integers between 0 and 9.");
+    %     nums = input("Enter a list of digits (0-9) in a vector format, e.g., [1 2 3]: ");
+    % end
+    nums = [1];
 
     % Switch to pendant control and select start point
     ur5.switch_to_pendant_control;
@@ -16,6 +17,12 @@ function ec_call_me(ur5)
     disp("Switched to pendant: select end point");
     waitforbuttonpress;
     g_end = compute_FK_DH(ur5.get_current_joints);
+    
+    ur5.switch_to_ros_control;
+    pause(2)
+    theta_safe = [60; -80; 100; -120; -90; 40] * pi / 180;
+    ur5.move_joints(theta_safe, 10);
+    pause(10)
 
     % Average Z to keep movement in XY plane
     z_avg = (g_start(3,4) + g_end(3,4)) / 2;
@@ -29,6 +36,9 @@ function ec_call_me(ur5)
     % Compute initial and final joint angles
     start_theta = closest_IK(g_start, ur5.home);
     end_theta = closest_IK(g_end, start_theta);
+    
+    ur5.move_joints(start_theta, 10);
+    pause(5)
 
     % Get start and end XY coordinates
     t1 = g_start(1:2,4);
@@ -41,10 +51,14 @@ function ec_call_me(ur5)
     curr_theta = start_theta;
     for j = 1:length(nums)
         wayp = get_waypoints(t1, t2, nums(j));
+        curr_theta = closest_IK(g_p(wayp(:,1)), curr_theta);
+        ur5.move_joints(curr_theta, 5);
+        pause(5);
         for k = 2:size(wayp,2)
-            p1 = wayp(:,k-1);
             p2 = wayp(:,k);
-            ur5IKcontrol(g_p(p1), g_p(p2), 4, ur5);
+            % ur5RRcontrol(g_p(p2), 4, ur5);
+            ur5.move_joints(closest_IK(g_p(p2),curr_theta), 5);
+            pause(5);
         end
 
         % Update path for next iteration

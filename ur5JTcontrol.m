@@ -9,10 +9,10 @@ function finalerr = ur5JTcontrol(gdesired, K, ur5)
     %              -1 if failed to converge
 
     % Control parameters
-    Tstep = 0.4;                % Control update time step (seconds)
-    thresh_v = 0.1;            % Convergence threshold for linear velocity (m)
+    Tstep = 0.25 / K;                % Control update time step (seconds)
+    thresh_v = 0.01;            % Convergence threshold for linear velocity (m)
     thresh_w = 1;               % Convergence threshold for angular velocity (rad)
-    max_iterations = 500;       % Maximum iterations before aborting
+    max_iterations = 20;       % Maximum iterations before aborting
 
     iteration = 0;
 
@@ -47,19 +47,18 @@ function finalerr = ur5JTcontrol(gdesired, K, ur5)
         end
 
         % Compute joint update using Jacobian transpose
-        q_next = q - 0.4 * Jb' * Xi;
+        q_next = q - K * Tstep * Jb' * Xi;
 
         if (safety(q_next, gdesired(3,4) - 0.02) == false)
             break
         end
 
         % Send joint command to robot
-        ur5.move_joints(q_next, 4);
-        pause(4);  % Pause for motion to execute
-        iteration
+        ur5.move_joints(q_next, 5);
+        pause(5);  % Pause for motion to execute
     end
 
     % If max iterations exceeded
-    disp("ABORTING: Maximum iterations exceeded without convergence.");
+    % disp("ABORTING: Maximum iterations exceeded without convergence.");
     finalerr = -1;
 end
