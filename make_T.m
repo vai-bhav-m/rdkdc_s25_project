@@ -20,7 +20,7 @@ waitforbuttonpress
 
 g_start = compute_FK_DH(ur5.get_current_joints);
 
-pause(5)
+pause(2)
 
 disp("Switched to pendant: select end point")
 waitforbuttonpress
@@ -38,7 +38,7 @@ disp("Switched to ros control")
 pause(5)
 
 theta_safe = [60; -80; 100; -120; -90; 40] * pi / 180;
-ur5.move_joints(theta_safe, 20);
+ur5.move_joints(theta_safe, 10);
 pause(10)
 
 % Visualize frames in RViz
@@ -48,6 +48,15 @@ tf_frame("base_link", "End", g_end);
 % Move to starting position
 start_theta = closest_IK(g_start, ur5.home);
 end_theta = closest_IK(g_end, start_theta);
+
+% Safety check
+if (safety(start_theta,g_end(3,4)-0.02) == false)
+    error("Choose safe starting point")
+elseif (safety(end_theta,g_end(3,4)-0.02) == false)
+    error("Choose safe end point")
+end
+
+% Move to starting point
 ur5.move_joints(start_theta, 10);
 pause(5);
 disp("Moved to start position. Click to start control")
@@ -61,6 +70,7 @@ elseif control_type == "RR"
     ur5RRcontrol(g_end,K,ur5);
     ur5.move_joints(end_theta, 10);
     pause(10);
+elseif control_type == "JT"
     ur5JTcontrol(g_end,K,ur5);
     ur5.move_joints(end_theta, 10);
     pause(10);
@@ -112,7 +122,7 @@ end
 
 pause(10)
 
-disp("DONE WITH DRAWOMG")
+disp("DONE WITH DRAWING")
 ur5.move_joints(theta_safe, 15);
 pause(5)
 

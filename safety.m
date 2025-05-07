@@ -34,19 +34,23 @@ function is_safe = safety(theta,z_thresh)
         signed_dist = normal' *(pos - P_plane);
 
    
-        if signed_dist < 0 || pos(3) < z_thresh
-            fprintf(' Joint %d FAILED constraint (negative side of y=0 plane or Z < 0)\n', i);
+        if signed_dist < 0
+            fprintf('Joint %d FAILED constraint (negative side of x=0.1 plane)\n', i);
             fprintf('Joint %d position: X=t%.2f, Y=%.2f, Z=%.2f | SignedDist=%.2f | Z=%.2f\n', ...
             i, pos(1), pos(2), pos(3), signed_dist, pos(3));
-
-            is_safe = false;
-            break
+            
+            error("RESTART WITH SAFER POINTS")    
         end
+        if (i==6 && pos(3) < z_thresh)
+            disp("UNSAFE: Marker might break")
+            error("RESTART WITH SAFER POINTS")    
+        end
+            
     end
 
-    if is_safe
-        fprintf(' All joints passed constraints.\n');
-    end
+    % if is_safe
+    %     fprintf(' All joints passed constraints.\n');
+    % end
 
     % % =====================
     % % PLOTTING SECTION

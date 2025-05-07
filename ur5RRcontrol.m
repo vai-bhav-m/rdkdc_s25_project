@@ -36,8 +36,9 @@ while true
 
     % Resolved-rate control law (euler integration): q_next = -K * pinv(Jb) * Xi * Tstep 
     q_next = q - K * Tstep * pinv(Jb) * Xi;
-
-    if (safety(q_next, gdesired(3,4) - 0.02) == false)
+    
+    is_safe = safety(q_next, gdesired(3,4) - 0.02)
+    if (is_safe == false)
         break
     end
 
