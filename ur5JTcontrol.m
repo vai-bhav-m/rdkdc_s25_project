@@ -49,6 +49,10 @@ function finalerr = ur5JTcontrol(gdesired, K, ur5)
         % Compute joint update using Jacobian transpose
         q_next = q - 0.4 * Jb' * Xi;
 
+        if (safety(q_next, gdesired(3,4) - 0.02) == false)
+            break
+        end
+
         % Send joint command to robot
         ur5.move_joints(q_next, 4);
         pause(4);  % Pause for motion to execute

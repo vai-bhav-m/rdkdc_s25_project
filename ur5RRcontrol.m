@@ -36,6 +36,11 @@ while true
 
     % Resolved-rate control law (euler integration): q_next = -K * pinv(Jb) * Xi * Tstep 
     q_next = q - K * Tstep * pinv(Jb) * Xi;
+
+    if (safety(q_next, gdesired(3,4) - 0.02) == false)
+        break
+    end
+
     ur5.move_joints(q_next, 5);      % Move robot to q_next
     pause(10);               
 end

@@ -61,7 +61,6 @@ elseif control_type == "RR"
     ur5RRcontrol(g_end,K,ur5);
     ur5.move_joints(end_theta, 10);
     pause(10);
-elseif control_type == "JT"
     ur5JTcontrol(g_end,K,ur5);
     ur5.move_joints(end_theta, 10);
     pause(10);
