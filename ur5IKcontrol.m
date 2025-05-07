@@ -15,7 +15,7 @@ for i = 1:N
     if (safety(current_theta, g_end(3,4) - 0.02) == false)
         break
     end
-    ur5.move_joints(current_theta, 10);
-    pause(10);
+    ur5.move_joints(current_theta, 4);
+    pause(4);
 end
 end

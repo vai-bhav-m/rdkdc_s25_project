@@ -38,7 +38,6 @@ function is_safe = safety(theta,z_thresh)
             fprintf('Joint %d FAILED constraint (negative side of x=0.1 plane)\n', i);
             fprintf('Joint %d position: X=t%.2f, Y=%.2f, Z=%.2f | SignedDist=%.2f | Z=%.2f\n', ...
             i, pos(1), pos(2), pos(3), signed_dist, pos(3));
-            
             error("RESTART WITH SAFER POINTS")    
         end
         if (i==6 && pos(3) < z_thresh)
