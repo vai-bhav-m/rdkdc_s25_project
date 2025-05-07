@@ -12,7 +12,7 @@ for i = 1:N
     g_interp = [R_i, pos_i; 0 0 0 1];
 
     current_theta = closest_IK(g_interp, current_theta);
-    ur5.move_joints(current_theta, 10);
-    pause(10);
+    ur5.move_joints(current_theta, 4);
+    pause(4);
 end
 end
