@@ -4,7 +4,26 @@ function ec_call_me(ur5)
     %     disp("Invalid input. Please enter a vector of integers between 0 and 9.");
     %     nums = input("Enter a list of digits (0-9) in a vector format, e.g., [1 2 3]: ");
     % end
-    nums = [1 2];
+    
+    while true
+        usr = input('Enter a list of digits between 0 and 9, e.g. [0 4 3]: ','s');
+    
+        if ~(startsWith(strtrim(usr),'[') && endsWith(strtrim(usr),']'))
+            fprintf('Error: input must be enclosed in square brackets.\n');
+            continue
+        end
+    
+        nums = str2num(usr);
+        valid = ~isempty(nums) && isvector(nums) ...
+                && all(nums == floor(nums)) ...
+                && all(0 <= nums & nums <= 9);
+    
+        if valid
+            break
+        else
+            fprintf('Error: enter only integers 0–9 separated by spaces.\n');
+        end
+    end
 
     % Switch to pendant control and select start point
     ur5.switch_to_pendant_control;
