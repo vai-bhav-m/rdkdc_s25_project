@@ -4,7 +4,7 @@ function ec_call_me(ur5)
     %     disp("Invalid input. Please enter a vector of integers between 0 and 9.");
     %     nums = input("Enter a list of digits (0-9) in a vector format, e.g., [1 2 3]: ");
     % end
-    nums = [1];
+    nums = [1 2];
 
     % Switch to pendant control and select start point
     ur5.switch_to_pendant_control;

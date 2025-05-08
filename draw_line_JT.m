@@ -21,13 +21,13 @@ waitforbuttonpress;
 % ur5.switch_to_ros_control
 % disp("Switched to ros control")
 % Define start and end transformation matrices
-g_start = [0 -1 0 0.3;
+g_start = [0 -1 0 0.2;
            -1 0 0 0.5;
             0 0 -1 0.2;
             0 0 0 1];
 
 g_end = [0 -1 0 0.40;
-         -1 0 0 0.45;
+         -1 0 0 0.5;
           0 0 -1 0.2;
           0 0 0 1];
 
@@ -57,7 +57,8 @@ disp("Moved to start position")
 waitforbuttonpress;
 
 %% RR
-K = 5;
+K = 2.5;
+pause(5);
 ur5JTcontrol(g_end,K,ur5)
 %% Interpolate from start to end transformation
 % current_theta = start_theta;

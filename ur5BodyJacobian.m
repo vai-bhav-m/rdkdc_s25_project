@@ -1,11 +1,11 @@
 function Jb = ur5BodyJacobian(joint_angles)
     % UR5 Link Parameters (in meters)
-    D1 = 0.089;       % D1
-    A2 = 0.425;  % A2
-    A3 = 0.392;    % A3
-    D4 = 0.109;    % D4
-    D5 = 0.095;   % D5
-    D6 = 0.082;    % D6
+    base_offset = 0.089;       % H1
+    shoulder_offset = 0.095;   % H2
+    upper_arm_length = 0.425;  % L1
+    forearm_length = 0.392;    % L2
+    wrist_offset_1 = 0.109;    % W1
+    wrist_offset_2 = 0.082;    % W2
 
     % Angular axes for each joint in the space frame
     joint_axes = [0, 0, 1;              % Joint 1
@@ -14,27 +14,19 @@ function Jb = ur5BodyJacobian(joint_angles)
                   0, 1, 0;              % Joint 4
                   0, 0, -1;             % Joint 5
                   0, 1, 0];             % Joint 6
-    
-    % q values
-    qs = [0, 0, 0;
-          0, 0, D1;
-          A2, 0, D1;
-          A2 + A3, 0, D1;
-          A2 + A3, D4, D1;
-          A2 + A3, D4, D1-D5];
 
     % Linear part of twist vectors for each joint
     joint_velocities = [0, 0, 0;                                 % Joint 1
-                        -D1, 0, 0;                      % Joint 2
-                        -D1, 0, A2;       % Joint 3
-                        -D1, 0, A2 + A3;    % Joint 4
-                        -D4, A2 + A3, 0; % Joint 5
-                        D5 - D1, 0, A2 + A3]; % Joint 6
+                        -base_offset, 0, 0;                      % Joint 2
+                        -base_offset, 0, upper_arm_length;       % Joint 3
+                        -base_offset, 0, upper_arm_length + forearm_length;    % Joint 4
+                        -wrist_offset_1, upper_arm_length + forearm_length, 0; % Joint 5
+                        shoulder_offset - base_offset, 0, upper_arm_length + forearm_length]; % Joint 6
 
     % Home configuration of the end-effector in the base frame
-    gst0 = [-1, 0,  0, A2 + A3;
-             0, 0,  1, D4 + D6;
-             0, 1,  0, D1 - D5;
+    gst0 = [-1, 0,  0, upper_arm_length + forearm_length;
+             0, 0,  1, wrist_offset_1 + wrist_offset_2;
+             0, 1,  0, base_offset - shoulder_offset;
              0, 0,  0, 1];
 
     % Initialize body Jacobian and end-effector transformation

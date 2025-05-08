@@ -13,9 +13,8 @@ thresh_w = 1;             % Threshold for convergence of angular component of Xi
 
 while true
     q = ur5.get_current_joints();   
-    Jb = ur5BodyJacobian(q);
-    % Jb = newJacobian(q);
-    
+    Jb = ur5BodyJacobian(q);       
+
     % Jb Singularity check using inverse condition number (low means near singularity)
     mu = manipulability(Jb, 'invcond');
     if  mu < 0.01
@@ -44,5 +43,5 @@ while true
     end
 
     ur5.move_joints(q_next, 5);      % Move robot to q_next
-    pause(10);               
+    pause(7);               
 end
