@@ -13,7 +13,7 @@ function finalerr = ur5JTcontrol(gdesired, K, ur5)
     Tstep = 0.25/K;                   % Fixed time step (seconds)
     thresh_v = 0.005;               % Linear velocity threshold (m)
     thresh_w = 1;                  % Angular velocity threshold (rad)
-    max_iterations = 100;           % Maximum number of iterations
+    max_iterations = 20;           % Maximum number of iterations
 
     iteration = 0;
 
@@ -31,7 +31,7 @@ function finalerr = ur5JTcontrol(gdesired, K, ur5)
 
         % Compute current end-effector pose and twist error
         gst = compute_FK_DH(q);  % Use your external DH-based FK function
-        Xi = getXi(inv(gdesired) * gst);  % Correct error computation
+        Xi = getXi(pinv(gdesired) * gst);  % Correct error computation
         v_k = Xi(1:3);
         omega_k = Xi(4:6);
 
@@ -63,11 +63,11 @@ function finalerr = ur5JTcontrol(gdesired, K, ur5)
         iteration
         % Send joint command to robot
         ur5.move_joints(q_next, 3);
-        pause(3);
+        pause(4);
     end
 
     % If maximum iterations exceeded
-    disp("ABORTING: Maximum iterations exceeded without convergence.");
+    % disp("ABORTING: Maximum iterations exceeded without convergence.");
     finalerr = -1;
 end
 
