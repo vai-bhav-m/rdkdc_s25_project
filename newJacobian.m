@@ -2,39 +2,45 @@ function Jb = ur5BodyJacobian(joint_angles)
     % UR5 Link Parameters (in meters)
     D1 = 0.089;       % D1
     A2 = 0.425;  % A2
-    A3 = 0.392;    % A3
+    A3 = 0.39225;    % A3
     D4 = 0.109;    % D4
     D5 = 0.095;   % D5
     D6 = 0.082;    % D6
 
     % Angular axes for each joint in the space frame
     joint_axes = [0, 0, 1;              % Joint 1
-                  0, 1, 0;              % Joint 2
-                  0, 1, 0;              % Joint 3
-                  0, 1, 0;              % Joint 4
+                  0, -1, 0;              % Joint 2
+                  0, -1, 0;              % Joint 3
+                  0, -1, 0;              % Joint 4
                   0, 0, -1;             % Joint 5
-                  0, 1, 0];             % Joint 6
+                  0, -1, 0];             % Joint 6
     
     % q values
     qs = [0, 0, 0;
-          0, 0, D1;
-          A2, 0, D1;
-          A2 + A3, 0, D1;
-          A2 + A3, D4, D1;
-          A2 + A3, D4, D1-D5];
+        0, 0, D1;
+        -A2, 0, D1;
+        -A2 - A3, 0, D1;
+        -A2 - A3, -D4, D1;
+        -A2 - A3, -D4, D1-D5];
+    
+    % my j
+    joint_velocities = zeros(6,3);
+    for i=1:6
+        joint_velocities(i,:) = cross(qs(i,:)',joint_axes(i,:)')';
+    end
 
     % Linear part of twist vectors for each joint
-    joint_velocities = [0, 0, 0;                                 % Joint 1
-                        -D1, 0, 0;                      % Joint 2
-                        -D1, 0, A2;       % Joint 3
-                        -D1, 0, A2 + A3;    % Joint 4
-                        -D4, A2 + A3, 0; % Joint 5
-                        D5 - D1, 0, A2 + A3]; % Joint 6
+    % joint_velocities = [0, 0, 0;                                 % Joint 1
+    %                     -base_offset, 0, 0;                      % Joint 2
+    %                     -base_offset, 0, upper_arm_length;       % Joint 3
+    %                     -base_offset, 0, upper_arm_length + forearm_length;    % Joint 4
+    %                     -wrist_offset_1, upper_arm_length + forearm_length, 0; % Joint 5
+    %                     shoulder_offset - base_offset, 0, upper_arm_length + forearm_length] % Joint 6
 
     % Home configuration of the end-effector in the base frame
-    gst0 = [-1, 0,  0, A2 + A3;
-             0, 0,  1, D4 + D6;
-             0, 1,  0, D1 - D5;
+    gst0 = [1, 0,  0, -A2 - A3;
+             0, 0,  1, -D4 - D6;
+             0, -1,  0, D1 - D5;
              0, 0,  0, 1];
 
     % Initialize body Jacobian and end-effector transformation

@@ -21,7 +21,8 @@ function finalerr = ur5JTcontrol(gdesired, K, ur5)
 
         % Get current joint angles and Jacobian
         q = ur5.get_current_joints;
-        Jb = ur5BodyJacobian(q);
+        % Jb = ur5BodyJacobian(q);
+        Jb = newJacobian(q);
         mu = manipulability(Jb, 'invcond');
 
         if mu < 0.01

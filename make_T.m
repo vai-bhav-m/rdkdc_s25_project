@@ -1,34 +1,34 @@
 function make_T(ur5, control_type, K)
 %% Hardcoded start and end
-% g_start = [0.0531   -0.9969   -0.0575    0.3270;
-%    -0.9962   -0.0489   -0.0716    0.5805;
-%     0.0686    0.0611   -0.9958    0.1450;
-%          0         0         0    1.0000];
+g_start = [0.0531   -0.9969   -0.0575    0.3270;
+   -0.9962   -0.0489   -0.0716    0.5805;
+    0.0686    0.0611   -0.9958    0.1450;
+         0         0         0    1.0000];
+
+g_end = [0.0531   -0.9969   -0.0575    0.4;
+   -0.9962   -0.0489   -0.0716    0.620;
+    0.0686    0.0611   -0.9958    0.1450;
+         0         0         0    1.0000];
+
+% %% Custom inputs
+% ur5.switch_to_pendant_control;
+% pause(5)
+% disp("Switched to pendant: select starting point")
+% waitforbuttonpress
 % 
-% g_end = [0.0531   -0.9969   -0.0575    0.4;
-%    -0.9962   -0.0489   -0.0716    0.620;
-%     0.0686    0.0611   -0.9958    0.1450;
-%          0         0         0    1.0000];
-
-%% Custom inputs
-ur5.switch_to_pendant_control;
-pause(5)
-disp("Switched to pendant: select starting point")
-waitforbuttonpress
-
-g_start = compute_FK_DH(ur5.get_current_joints);
-
-pause(2)
-
-disp("Switched to pendant: select end point")
-waitforbuttonpress
-
-g_end = compute_FK_DH(ur5.get_current_joints);
-
-% Making z coordinate the same
-z_avg = (g_start(3,4) + g_end(3,4)) / 2;
-g_start(3,4) = z_avg;
-g_end(3,4) = z_avg;
+% g_start = compute_FK_DH(ur5.get_current_joints);
+% 
+% pause(2)
+% 
+% disp("Switched to pendant: select end point")
+% waitforbuttonpress
+% 
+% g_end = compute_FK_DH(ur5.get_current_joints);
+% 
+% % Making z coordinate the same
+% z_avg = (g_start(3,4) + g_end(3,4)) / 2;
+% g_start(3,4) = z_avg;
+% g_end(3,4) = z_avg;
 
 %% Initialize safe config
 ur5.switch_to_ros_control;
@@ -37,7 +37,7 @@ pause(5)
 
 theta_safe = [60; -80; 100; -120; -90; 40] * pi / 180;
 ur5.move_joints(theta_safe, 10);
-pause(10)
+pause(5)
 
 % Visualize frames in RViz
 tf_frame("base_link", "Start", g_start);
