@@ -4,7 +4,7 @@ function ec_call_me(ur5)
     %     disp("Invalid input. Please enter a vector of integers between 0 and 9.");
     %     nums = input("Enter a list of digits (0-9) in a vector format, e.g., [1 2 3]: ");
     % end
-    nums = [1 2];
+    nums = [0 7];
 
     % Switch to pendant control and select start point
     ur5.switch_to_pendant_control;
@@ -13,7 +13,7 @@ function ec_call_me(ur5)
     waitforbuttonpress;
     g_start = compute_FK_DH(ur5.get_current_joints);
 
-    pause(5);
+    pause(2);
     disp("Switched to pendant: select end point");
     waitforbuttonpress;
     g_end = compute_FK_DH(ur5.get_current_joints);
@@ -46,7 +46,7 @@ function ec_call_me(ur5)
     l = norm(t1 - t2);
     dir = (t2 - t1) / l;
     pdir = [-dir(2); dir(1)];
-    update_vec = l * pdir;
+    update_vec = 0.8 * l * pdir;
 
     curr_theta = start_theta;
     for j = 1:length(nums)
@@ -55,19 +55,21 @@ function ec_call_me(ur5)
         ur5.move_joints(curr_theta, 5);
         pause(5);
         for k = 2:size(wayp,2)
+            p1 = wayp(:,k-1);
             p2 = wayp(:,k);
-            % ur5RRcontrol(g_p(p2), 4, ur5);
-            ur5.move_joints(closest_IK(g_p(p2),curr_theta), 5);
+            ur5IKcontrol(g_p(p1), g_p(p2), 1, ur5);
+            % ur5.move_joints(closest_IK(g_p(p2),curr_theta), 5);
             pause(5);
         end
 
         % Update path for next iteration
         t1 = t1 + update_vec;
         t2 = t2 + update_vec;
+    
 
         % Move above next starting position
         g_n = g_p(t1);
-        g_n(3,4) = g_n(3,4) + 0.05; % small Z offset
+        g_n(3,4) = g_n(3,4) + 0.03; % small Z offset
         curr_theta = closest_IK(g_n, curr_theta);
         ur5.move_joints(curr_theta, 5);
         pause(5);
@@ -97,7 +99,7 @@ function waypoints = get_waypoints(t1, t2, number)
         case 5
             waypoints = [t1+rmov, t1, t1+dmov, t1+dmov+rmov, t2+rmov, t2];
         case 6
-            waypoints = [t1+rmov, t1, t1+dmov, t1+dmov+rmov, t2+rmov, t2];
+            waypoints = [t1+rmov, t1, t1+dmov, t1+dmov+rmov, t2+rmov, t2, t1+dmov];
         case 7
             waypoints = [t1, t1+rmov, t2+rmov];
         case 8
