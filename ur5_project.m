@@ -1,4 +1,3 @@
-function make_T(ur5, control_type, K)
 %% Hardcoded start and end
 % g_start = [0.0531   -0.9969   -0.0575    0.3270;
 %    -0.9962   -0.0489   -0.0716    0.5805;
@@ -10,6 +9,8 @@ function make_T(ur5, control_type, K)
 %     0.0686    0.0611   -0.9958    0.1450;
 %          0         0         0    1.0000];
 
+control_type = input("Enter a control type (IK, RR, JT)");
+K = input("Enter in a gain value");
 
 %% Custom inputs
 ur5.switch_to_pendant_control;
@@ -129,5 +130,3 @@ pause(10)
 disp("DONE WITH DRAWING")
 ur5.move_joints(theta_safe, 15);
 pause(5)
-
-
