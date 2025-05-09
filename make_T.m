@@ -40,6 +40,11 @@ theta_safe = [60; -80; 100; -120; -90; 40] * pi / 180;
 ur5.move_joints(theta_safe, 10);
 pause(10)
 
+
+ % g_pen = [1 0 0 0; 0 1 0 -0.049; 0 0 1 -0.12228; 0 0 0 1 ]  
+ % g_start = g_start*g_pen
+ % g_end = g_end*g_pen
+
 % Visualize frames in RViz
 tf_frame("base_link", "Start", g_start);
 tf_frame("base_link", "End", g_end);

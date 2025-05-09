@@ -14,6 +14,8 @@ function g = compute_FK_DH(theta)
     for i = 1:6
         g = g * DH(a(i), alpha(i), d(i), theta(i));  % Apply DH transformation for each joint
     end
+     % g_pen = [1 0 0 0; 0 1 0 0.049; 0 0 1 0.12228; 0 0 0 1 ]  ;
+     % g = g*g_pen;
 end
 
 

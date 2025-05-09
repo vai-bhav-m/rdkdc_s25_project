@@ -48,7 +48,8 @@ function finalerr = ur5JTcontrol(gdesired, K, ur5)
         end
 
         % Compute next joint configuration using Jacobian transpose
-        q_next = q - K * Tstep * Jb' * Xi;
+        q_next = q - K * Tstep * Jb.' * Xi;
+        %% 
 
         % Wrap joint angles to [-pi, pi]
         q_next = wrapToPi(q_next);

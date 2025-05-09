@@ -8,7 +8,7 @@ function is_safe = safety(theta,z_thresh)
     z_axis_rot = Rz * [0; 0; 1];
     normal = -x_axis_rot / norm(x_axis_rot);
 
-    P_plane = [0.200, 0, 0]';
+    P_plane = [0.400, 0, 0]';
 
     % Initialize as safe
     is_safe = true;
@@ -40,7 +40,7 @@ function is_safe = safety(theta,z_thresh)
             i, pos(1), pos(2), pos(3), signed_dist, pos(3));
             error("RESTART WITH SAFER POINTS")    
         end
-        if (i==6 && pos(3) < z_thresh)
+        if (i==6 && pos(3) < 0)
             disp("UNSAFE: Marker might break")
             error("RESTART WITH SAFER POINTS")    
         end
